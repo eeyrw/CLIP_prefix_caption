@@ -297,7 +297,7 @@ def recover_checkpoint(checkPointPath,clipCaptionModel):
 
 
 def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
-          lr: float = 2e-5, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
+          lr: float = 2e-6, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
     device = torch.device('cuda:0')
     batch_size = args.bs
@@ -308,6 +308,7 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
     model.train()
     optimizer = AdamW(model.parameters(), lr=lr)
     train_dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+    print('Fianl train ds len:',len(dataset))
     scheduler = get_linear_schedule_with_warmup(
         optimizer, num_warmup_steps=warmup_steps, num_training_steps=epochs * len(train_dataloader)
     )
@@ -344,14 +345,14 @@ def train(dataset: ClipCocoDataset, model: ClipCaptionModel, args,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', default='F:/COCO_DS/2oscar_split_ViT-B_32_train.pkl')
+    parser.add_argument('--data', default='F:/COCO_DS/hunk_split_ViT-B_32_train.pkl')
     parser.add_argument('--out_dir', default='F:/COCO_DS/checkpoints')
-    parser.add_argument('--prefix', default='coco_prefix', help='prefix for saved filenames')
-    parser.add_argument('--epochs', type=int, default=100)
-    parser.add_argument('--save_every', type=int, default=1)
+    parser.add_argument('--prefix', default='hunk_conceptual_prefix', help='prefix for saved filenames')
+    parser.add_argument('--epochs', type=int, default=1000)
+    parser.add_argument('--save_every', type=int, default=100)
     parser.add_argument('--prefix_length', type=int, default=10)
     parser.add_argument('--prefix_length_clip', type=int, default=10)
-    parser.add_argument('--bs', type=int, default=50)
+    parser.add_argument('--bs', type=int, default=25)
     parser.add_argument('--only_prefix', dest='only_prefix', action='store_true')
     parser.add_argument('--mapping_type', type=str, default='mlp', help='mlp/transformer')
     parser.add_argument('--num_layers', type=int, default=8)
@@ -371,7 +372,7 @@ def main():
                                   num_layers=args.num_layers, mapping_type=args.mapping_type)
         print("Train both prefix and GPT")
         sys.stdout.flush()
-    # recover_checkpoint(r"F:\COCO_DS\checkpoints\coco_prefix-008-final.pt",model)
+    recover_checkpoint('conceptual_weights.pt',model)#(r"F:\COCO_DS\checkpoints\coco_prefix-008-final.pt",model)
     train(dataset, model, args, output_dir=args.out_dir, output_prefix=args.prefix)
 
 
