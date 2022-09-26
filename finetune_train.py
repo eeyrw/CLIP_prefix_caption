@@ -12,6 +12,7 @@ import json
 from typing import Tuple, Optional, Union
 from model import ClipCaptionModel,ClipCaptionPrefix,MappingType
 from dataset import ClipImageCaptionDataset
+from transformers import AdamW, get_linear_schedule_with_warmup
 
 
 def save_config(args: argparse.Namespace):

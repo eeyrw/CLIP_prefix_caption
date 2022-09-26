@@ -95,7 +95,7 @@ class Predictor():
             )
             prefix_embed = model.clip_project(prefix).reshape(1, self.prefix_length, -1)
         if use_beam_search:
-            return generate_beam(model, self.tokenizer, embed=prefix_embed)[0]
+            return '\n'.join(generate_beam(model, self.tokenizer, embed=prefix_embed))
         else:
             return generate2(model, self.tokenizer, embed=prefix_embed)
 
