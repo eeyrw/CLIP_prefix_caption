@@ -71,16 +71,16 @@ def main(clip_model_type: str):
     all_embeddings = []
     all_captions = []
     i = 0
-    d = dict()
     for images, captions in tqdm(parse_dataloader):
         images = images.to(device)
         with torch.no_grad():
             prefix_pr = clip_model.encode_image(images).cpu()
-        for prefix, caption in zip(prefix_pr, captions):
+            all_embeddings.append(prefix_pr)
+        for caption in captions:
+            d = dict()
             d["clip_embedding"] = i
             d["caption"] = caption
             i = i+1
-            all_embeddings.append(prefix)
             all_captions.append(d)
             if (i + 1) % 10000 == 0:
                 with open(out_path, 'wb') as f:
