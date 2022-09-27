@@ -102,9 +102,9 @@ def train(dataset: ClipImageCaptionDataset, model: ClipCaptionModel, args,
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', default='F:/COCO_DS/hunk_split_ViT-B_32_train.pkl')
+    parser.add_argument('--data', default='F:/COCO_DS/hunk_split_ViT-L_14@336px_train.pkl')
     parser.add_argument('--out_dir', default='F:/COCO_DS/checkpoints')
-    parser.add_argument('--prefix', default='hunk_conceptual_prefix', help='prefix for saved filenames')
+    parser.add_argument('--prefix', default='hunk_coco_vit14l_336px_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--save_every', type=int, default=100)
     parser.add_argument('--prefix_length', type=int, default=10)
@@ -118,7 +118,7 @@ def main():
     args = parser.parse_args()
     prefix_length = args.prefix_length
     dataset = ClipImageCaptionDataset(args.data, prefix_length, normalize_prefix=args.normalize_prefix)
-    prefix_dim = 640 if args.is_rn else 512
+    prefix_dim = 768#640 if args.is_rn else 512
     args.mapping_type = {'mlp': MappingType.MLP, 'transformer': MappingType.Transformer}[args.mapping_type]
     if args.only_prefix:
         model = ClipCaptionPrefix(prefix_length, clip_length=args.prefix_length_clip, prefix_size=prefix_dim,
@@ -129,7 +129,7 @@ def main():
                                   num_layers=args.num_layers, mapping_type=args.mapping_type)
         print("Train both prefix and GPT")
         sys.stdout.flush()
-    recover_checkpoint('conceptual_weights.pt',model)#(r"F:\COCO_DS\checkpoints\coco_prefix-008-final.pt",model)
+    recover_checkpoint(r"F:\COCO_DS\checkpoints\coco_vit14l_336px_prefix-005.pt",model)
     train(dataset, model, args, output_dir=args.out_dir, output_prefix=args.prefix)
 
 

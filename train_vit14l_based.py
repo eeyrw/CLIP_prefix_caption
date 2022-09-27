@@ -54,7 +54,7 @@ def recover_checkpoint(checkPointPath,clipCaptionModel):
 
 
 def train(dataset: ClipImageCaptionDataset, model: ClipCaptionModel, args,
-          lr: float = 2e-6, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
+          lr: float = 2e-4, warmup_steps: int = 5000, output_dir: str = ".", output_prefix: str = ""):
 
     device = torch.device('cuda:0')
     batch_size = args.bs
@@ -106,7 +106,7 @@ def main():
     parser.add_argument('--out_dir', default='F:/COCO_DS/checkpoints')
     parser.add_argument('--prefix', default='coco_vit14l_336px_prefix', help='prefix for saved filenames')
     parser.add_argument('--epochs', type=int, default=1000)
-    parser.add_argument('--save_every', type=int, default=100)
+    parser.add_argument('--save_every', type=int, default=1)
     parser.add_argument('--prefix_length', type=int, default=10)
     parser.add_argument('--prefix_length_clip', type=int, default=10)
     parser.add_argument('--bs', type=int, default=25)

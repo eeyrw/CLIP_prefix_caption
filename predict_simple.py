@@ -67,18 +67,19 @@ class Predictor():
         """Load the model into memory to make running multiple predictions efficient"""
         self.device = torch.device("cuda")
         self.clip_model, self.preprocess = clip.load(
-            "ViT-B/32", device=self.device, jit=False
+            "ViT-L/14@336px", device=self.device, jit=False
         )
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
         self.models = {}
         self.prefix_length = 10
+        self.prefix_size = 768
         self.refreshWeight()
 
     def refreshWeight(self):
         self.load_weights()
         for key, weights_path in WEIGHTS_PATHS.items():
-            model = ClipCaptionModel(self.prefix_length)
+            model = ClipCaptionModel(self.prefix_length,self.prefix_size)
             model.load_state_dict(torch.load(weights_path, map_location=CPU))
             model = model.eval()
             model = model.to(self.device)
